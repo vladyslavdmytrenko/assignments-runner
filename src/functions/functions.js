@@ -38,10 +38,20 @@ export const counter = (function () {
   };
 })();
 
-export function callableMultiplier() {
-  // TODO:
-  throw "Not implemented";
-}
+export const callableMultiplier = (function () {
+  let counter = null;
+  let result;
+  return function (...arr) {
+    if (arr.length > 0) {
+      const initValue = counter ? counter : 1;
+      counter = arr.reduce((prev, curr) => prev * curr, initValue);
+      return callableMultiplier;
+    }
+    result = counter;
+    counter = null;
+    return result;
+  };
+})();
 
 export function createCalculator() {
   // TODO:
