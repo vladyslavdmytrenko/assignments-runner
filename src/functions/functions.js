@@ -57,21 +57,36 @@ function Calculator(initValue = 0) {
   this.log = [];
   this._value = initValue;
 
+  this.addLog("init", initValue);
   Object.defineProperty(this, "value", {
-    value: initValue,
     get: function () {
-      return this.value;
+      return this._value;
     },
-    set: function (value) {
-      return value;
-    },
+    set: function () {},
   });
 }
-Calculator.prototype.add = function (value) {
-  this.value + value;
+Calculator.prototype.addLog = function (operation, value) {
+  this.log.push({
+    operation,
+    value,
+  });
 };
-
-let a = new Calculator(1);
+Calculator.prototype.add = function (value) {
+  this.addLog("add", value);
+  this._value += value;
+};
+Calculator.prototype.subtract = function (value) {
+  this.addLog("subtract", value);
+  this._value -= value;
+};
+Calculator.prototype.multiply = function (value) {
+  this.addLog("multiply", value);
+  this._value *= value;
+};
+Calculator.prototype.divide = function (value) {
+  this.addLog("divide", value);
+  this._value /= value;
+};
 
 export function createCalculator(initValue) {
   return new Calculator(initValue);
