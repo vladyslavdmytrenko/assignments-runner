@@ -53,7 +53,26 @@ export const callableMultiplier = (function () {
   };
 })();
 
-export function createCalculator() {
-  // TODO:
-  throw "Not implemented";
+function Calculator(initValue = 0) {
+  this.log = [];
+  this._value = initValue;
+
+  Object.defineProperty(this, "value", {
+    value: initValue,
+    get: function () {
+      return this.value;
+    },
+    set: function (value) {
+      return value;
+    },
+  });
+}
+Calculator.prototype.add = function (value) {
+  this.value + value;
+};
+
+let a = new Calculator(1);
+
+export function createCalculator(initValue) {
+  return new Calculator(initValue);
 }
