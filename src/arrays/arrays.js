@@ -83,12 +83,77 @@ export function reduceTo(array, reduceParam) {
   }
 }
 
-export function sort() {
-  // TODO:
-  throw "Not implemented";
+function sortByOrder(a, b, order = "asc") {
+  let result;
+
+  switch (order) {
+    case "desc":
+      if (a > b) result = -1;
+      if (a < b) result = 1;
+      return result;
+
+    case "asc":
+      if (a < b) result = -1;
+      if (a > b) result = 1;
+      return result;
+  }
 }
 
-export function complex() {
-  // TODO:
-  throw "Not implemented";
+export function sort(array, sortParam) {
+  switch (typeof sortParam) {
+    case "undefined":
+      return array.sort((a, b) => a - b);
+
+    case "string":
+      return array.sort((a, b) => a[sortParam] - b[sortParam]);
+
+    case "object":
+      return array.sort((a, b) => {
+        let result;
+
+        sortParam.forEach((el, index, array) => {
+          if (!result) {
+            if (typeof el === "string") {
+              result = sortByOrder(a[el], b[el]);
+              return;
+            }
+
+            result = sortByOrder(a[el.field], b[el.field], el.order);
+          }
+
+          if (!result && index === array.length - 1) result = 0;
+        });
+
+        return result;
+      });
+  }
+}
+
+export function complex(array, complexParams) {
+  let result;
+
+  complexParams.forEach((param) => {
+    switch (param.operation) {
+      case "filter":
+        result = array.filter((el) => param.callback(el[param.property]));
+        break;
+
+      case "map":
+        result = result.map((el) => el[param.property]);
+        break;
+
+      case "reduce":
+        result = result.reduce((prevVal, currEl) => {
+          prevVal += currEl[param.property];
+          return prevVal;
+        }, 0);
+        break;
+
+      case "sort":
+        result = result.sort((a, b) => sortByOrder(a, b, param.order));
+        break;
+    }
+  });
+
+  return result;
 }
