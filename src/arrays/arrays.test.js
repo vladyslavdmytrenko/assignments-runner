@@ -105,11 +105,11 @@ describe('sort', () => {
       { age: 11, total: 7 },
     ];
     const outputList = [
-      { age: 2, total: 15 },
+      { age: 2, total: 7 },
       { age: 4, total: 7 },
-      { age: 4, total: 10 },
-      { age: 10, total: 7 },
-      { age: 11, total: 7 },
+      { age: 4, total: 7 },
+      { age: 10, total: 10 },
+      { age: 11, total: 15 },
       { age: 11, total: 70 },
     ];
 
@@ -117,6 +117,7 @@ describe('sort', () => {
   });
 
   test('sort by total and age', () => {
+    // Default sorting - ASC
     const inputList = [
       { age: 4, total: 10 },
       { age: 2, total: 15 },
@@ -125,16 +126,59 @@ describe('sort', () => {
       { age: 4, total: 7 },
       { age: 11, total: 7 },
     ];
-    const outputList = [
-      { age: 11, total: 7 },
-      { age: 10, total: 7 },
+    // Age asc; Total asc
+    const outputList1 = [
+      { age: 2, total: 7 },
       { age: 4, total: 7 },
-      { age: 4, total: 10 },
-      { age: 2, total: 15 },
+      { age: 4, total: 7 },
+      { age: 10, total: 10 },
+      { age: 11, total: 15 },
       { age: 11, total: 70 },
     ];
+    // Age desc; Total asc
+    const outputList2 = [
+      { age: 11, total: 7 },
+      { age: 11, total: 7 },
+      { age: 10, total: 7 },
+      { age: 4, total: 10 },
+      { age: 4, total: 15 },
+      { age: 2, total: 70 },
+    ];
+    // Age asc; Total desc 
+    const outputList3 = [
+      { age: 2, total: 70 },
+      { age: 4, total: 15 },
+      { age: 4, total: 10 },
+      { age: 10, total: 7 },
+      { age: 11, total: 7 },
+      { age: 11, total: 7 },
+    ];
+    // Age desc; Total desc
+    const outputList4 = [
+      { age: 11, total: 70 },
+      { age: 11, total: 15 },
+      { age: 10, total: 10 },
+      { age: 4, total: 7 },
+      { age: 4, total: 7 },
+      { age: 2, total: 7 },
+    ];
 
-    expect(sort(inputList, ['total', { field: 'age', order: 'desc' }])).toEqual(outputList);
+    // Age asc; Total asc 
+    expect(sort(inputList, ['total', 'age'])).toEqual(outputList1);
+    expect(sort(inputList, [{ field: 'total', order: 'asc' }, 'age'])).toEqual(outputList1);
+    expect(sort(inputList, ['total', { field: 'age', order: 'asc' }])).toEqual(outputList1);
+    expect(sort(inputList, [{ field: 'age', order: 'asc' }, { field: 'total', order: 'asc' }])).toEqual(outputList1);
+
+    // Age desc; Total asc
+    expect(sort(inputList, ['total', { field: 'age', order: 'desc' }])).toEqual(outputList2);
+    expect(sort(inputList, [{ field: 'total', order: 'asc' }, { field: 'age', order: 'desc' }])).toEqual(outputList2);
+
+    // Age asc; Total desc
+    expect(sort(inputList, ['age', { field: 'total', order: 'desc' }])).toEqual(outputList3);
+    expect(sort(inputList, [{ field: 'age', order: 'asc' }, { field: 'total', order: 'desc' }])).toEqual(outputList3);
+
+    // Age desc; Total desc
+    expect(sort(inputList, [{ field: 'age', order: 'desc' }, { field: 'total', order: 'desc' }])).toEqual(outputList4);
   });
 });
 
