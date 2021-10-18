@@ -17,9 +17,7 @@ export function mapToProfile(array) {
     const name = el.name || null;
     const surname = el.surname || null;
     const fullname =
-      name || surname
-        ? `${name || "_"} ${surname || "_"}`
-        : null;
+      name || surname ? `${name || "_"} ${surname || "_"}` : null;
     const result = {
       name,
       surname,
@@ -113,11 +111,13 @@ export function sort(array, sortParam) {
     case "object":
       let sortedData = {};
       let result;
+
       sortParam.forEach((sorter) => {
         if (typeof sorter === "string") {
           sortedData[sorter] = array
             .sort((a, b) => sortByOrder(a[sorter], b[sorter]))
             .map((item) => item[sorter]);
+
           return;
         }
 
@@ -132,6 +132,7 @@ export function sort(array, sortParam) {
         for (const key in sortedData) {
           item[key] = sortedData[key][index];
         }
+
         return item;
       });
 
