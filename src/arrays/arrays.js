@@ -13,12 +13,12 @@ export function mapTo(array, param) {
 
 export function mapToProfile(array) {
   return array.map((el) => {
-    const age = el.age ? el.age : null;
-    const name = el.name ? el.name : null;
-    const surname = el.surname ? el.surname : null;
+    const age = el.age || null;
+    const name = el.name || null;
+    const surname = el.surname || null;
     const fullname =
       name || surname
-        ? `${name ? name : "_"} ${surname ? surname : "_"}`
+        ? `${name || "_"} ${surname || "_"}`
         : null;
     const result = {
       name,
@@ -30,12 +30,12 @@ export function mapToProfile(array) {
     Object.defineProperties(result, {
       isOld: {
         get: function () {
-          return this.age ? (this.age >= 65 ? true : false) : false;
+          return this.age ? this.age >= 65 : false;
         },
       },
       isAnonymous: {
         get: function () {
-          return this.fullname ? false : true;
+          return !this.fullname;
         },
       },
     });
@@ -85,6 +85,16 @@ export function reduceTo(array, reduceParam) {
 
 function sortByOrder(a, b, order = "asc") {
   let result;
+
+  // switch (order) {
+  //   case "desc":
+  //     if (a > b) return -1;
+  //     if (a < b) return 1;
+
+  //   case "asc":
+  //     if (a < b) return -1;
+  //     if (a > b) return 1;
+  // }
 
   switch (order) {
     case "desc":
