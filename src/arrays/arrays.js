@@ -86,16 +86,6 @@ export function reduceTo(array, reduceParam) {
 function sortByOrder(a, b, order = "asc") {
   let result;
 
-  // switch (order) {
-  //   case "desc":
-  //     if (a > b) return -1;
-  //     if (a < b) return 1;
-
-  //   case "asc":
-  //     if (a < b) return -1;
-  //     if (a > b) return 1;
-  // }
-
   switch (order) {
     case "desc":
       if (a > b) result = -1;
@@ -106,6 +96,9 @@ function sortByOrder(a, b, order = "asc") {
       if (a < b) result = -1;
       if (a > b) result = 1;
       return result;
+
+    default:
+      return 0;
   }
 }
 
@@ -118,24 +111,31 @@ export function sort(array, sortParam) {
       return array.sort((a, b) => a[sortParam] - b[sortParam]);
 
     case "object":
-      return array.sort((a, b) => {
-        let result;
+      let sortedData = {};
+      let result;
+      sortParam.forEach((sorter) => {
+        if (typeof sorter === "string") {
+          sortedData[sorter] = array
+            .sort((a, b) => sortByOrder(a[sorter], b[sorter]))
+            .map((item) => item[sorter]);
+          return;
+        }
 
-        sortParam.forEach((el, index, array) => {
-          if (!result) {
-            if (typeof el === "string") {
-              result = sortByOrder(a[el], b[el]);
-              return;
-            }
-
-            result = sortByOrder(a[el.field], b[el.field], el.order);
-          }
-
-          if (!result && index === array.length - 1) result = 0;
-        });
-
-        return result;
+        sortedData[sorter.field] = array
+          .sort((a, b) =>
+            sortByOrder(a[sorter.field], b[sorter.field], sorter.order)
+          )
+          .map((item) => item[sorter.field]);
       });
+
+      result = array.map((item, index) => {
+        for (const key in sortedData) {
+          item[key] = sortedData[key][index];
+        }
+        return item;
+      });
+
+      return result;
   }
 }
 
